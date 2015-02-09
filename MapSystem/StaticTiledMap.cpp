@@ -20,7 +20,7 @@ bool TileMap::loadFromXML(const std::string name)
 	TiXmlElement *map = mapFile.FirstChildElement("map");
 	width_in_tiles 	  = atoi(map->Attribute("width"));
 	height_in_tiles   = atoi(map->Attribute("height"));
-	tile_width		  = atoi(map->Attribute("tilewidth"));
+	tile_width	  = atoi(map->Attribute("tilewidth"));
 	tile_height       = atoi(map->Attribute("tileheight"));
 	//rozmiary i typ
 	m_vertices.setPrimitiveType(sf::Quads);
@@ -52,10 +52,20 @@ bool TileMap::loadFromXML(const std::string name)
 	{
 		TiXmlElement* layerData = layer->FirstChildElement("data"); // znacznik data
 		if(layerData == NULL)
+		{
+			#ifdef __DEBUG_MAP
 			std::cout << "Nie znaleziono <data>" << std::endl;
+			#endif
+			return false;
+		}
 		TiXmlElement *tile = layerData->FirstChildElement("tile");
 		if(tile == NULL)
+		{
+			#ifdef __DEBUG_MAP
 			std::cout << "Nie znaleziono <tile>" << std::endl;
+			#endif
+			return false;
+		}
 			
 		while(tile)
 		{
@@ -75,7 +85,7 @@ bool TileMap::loadFromXML(const std::string name)
                 }
             }
             #ifdef __DEBUG_MAP 
-				 printf("GIDNUM:%i LAYER:%i X:%i Y:%i\n",numz,layerNum,x,y);
+			 printf("GIDNUM:%i LAYER:%i X:%i Y:%i\n",numz,layerNum,x,y);
             #endif
 				
 			numz++;
@@ -93,12 +103,12 @@ bool TileMap::loadFromXML(const std::string name)
 			TiXmlElement *object = objectsGroup->FirstChildElement("object");
 			while(object)
 			{
-				std::string pejasluxd;
+				std::string id;
 				if(object->Attribute("id") != NULL)
-					pejasluxd = object->Attribute("id");
+					id = object->Attribute("id");
 				
 				#ifdef __DEBUG_MAP	
-					printf("Id:%s\n", pejasluxd.c_str());
+					printf("Id:%s\n", id.c_str());
 				#endif
 				object = object->NextSiblingElement("object");
 			}
